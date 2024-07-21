@@ -50,12 +50,12 @@ fn main() {
         let chars = program.chars().collect::<Vec<char>>();
         match chars.get(0).unwrap_or(&' ') {
             '!' => {
-                let program = &program[1..chars.len()];
+                let program = &chars[1..chars.len()].iter().collect::<String>();
                 let program = program.split("=").collect::<Vec<&str>>();
                 if program.len() >= 2 {
                     let (subject, object) = (program[0].trim(), program[1].trim());
                     amalog.set_fact(subject.to_string(), object.to_string());
-                    println!("Facts: {{{}}}", {
+                    println!("Facts: {{ {} }}", {
                         amalog
                             .logics
                             .iter()
@@ -68,7 +68,7 @@ fn main() {
                 }
             }
             '?' => {
-                let program = &program[1..chars.len()];
+                let program = &chars[1..chars.len()].iter().collect::<String>();
                 let program = program.split("=").collect::<Vec<&str>>();
                 if program.len() >= 2 {
                     let (subject, object) = (program[0].trim(), program[1].trim());

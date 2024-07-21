@@ -43,6 +43,7 @@ fn input(prompt: &str) -> String {
 }
 
 fn main() {
+    println!("AmaLog - simple amateur's logical model \n(c) 2024 梶塚太智. All rights reserved");
     let mut amalog = AmaLog::new();
     loop {
         let program = input("> ");

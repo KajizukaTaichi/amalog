@@ -12,23 +12,36 @@ impl AmaLog {
         }
     }
 
-    fn set_fact(&mut self, subject: String, object: String) {
+    fn set_fact(&mut self, subject: String, predicate: String) {
         self.logics
             .entry(subject)
-            .and_modify(|value| *value = object.clone())
-            .or_insert(object);
+            .and_modify(|value| *value = predicate.clone())
+            .or_insert(predicate);
     }
 
-    fn query(&mut self, subject: String, object: String) -> bool {
+    fn query_equal(&mut self, subject: String, predicate: String) -> bool {
         let result = self.logics.get(&subject);
         if let Some(i) = result {
-            if *i == object {
+            if *i == predicate {
                 true
             } else {
-                self.query(i.clone(), object)
+                self.query_equal(i.clone(), predicate)
             }
         } else {
             false
+        }
+    }
+
+    fn query_what(&mut self, subject: String) -> Option<String> {
+        let result = self.logics.get(&subject).cloned();
+        if let Some(i) = result {
+            if let Some(j) = self.query_what(i.clone()) {
+                Some(j)
+            } else {
+                Some(i.clone())
+            }
+        } else {
+            None
         }
     }
 }
@@ -53,8 +66,8 @@ fn main() {
                 let program = &chars[1..chars.len()].iter().collect::<String>();
                 let program = program.split("=").collect::<Vec<&str>>();
                 if program.len() >= 2 {
-                    let (subject, object) = (program[0].trim(), program[1].trim());
-                    amalog.set_fact(subject.to_string(), object.to_string());
+                    let (subject, predicate) = (program[0].trim(), program[1].trim());
+                    amalog.set_fact(subject.to_string(), predicate.to_string());
                     println!("Facts: {{ {} }}", {
                         amalog
                             .logics
@@ -64,20 +77,27 @@ fn main() {
                             .join(", ")
                     })
                 } else {
-                    println!("Error: not a equal");
+                    println!("Error: there isn't a equal to separate subject and predicate");
                 }
             }
             '?' => {
                 let program = &chars[1..chars.len()].iter().collect::<String>();
                 let program = program.split("=").collect::<Vec<&str>>();
                 if program.len() >= 2 {
-                    let (subject, object) = (program[0].trim(), program[1].trim());
-                    println!("{}", amalog.query(subject.to_string(), object.to_string()));
+                    let (subject, predicate) = (program[0].trim(), program[1].trim());
+                    println!(
+                        "{}",
+                        amalog.query_equal(subject.to_string(), predicate.to_string())
+                    );
                 } else {
-                    println!("Error: not a equal");
+                    println!("Error: there isn't a equal to separate subject and predicate");
                 }
             }
-            _ => {}
+            _ => {
+                if let Some(i) = amalog.query_what(program) {
+                    println!("{}", i.clone())
+                }
+            }
         }
     }
 }

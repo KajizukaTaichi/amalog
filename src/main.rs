@@ -52,15 +52,30 @@ fn main() {
             '!' => {
                 let program = &program[1..chars.len()];
                 let program = program.split("=").collect::<Vec<&str>>();
-                let (subject, object) = (program[0].trim(), program[1].trim());
-                amalog.set_fact(subject.to_string(), object.to_string());
-                println!("{:?}", amalog.logics)
+                if program.len() >= 2 {
+                    let (subject, object) = (program[0].trim(), program[1].trim());
+                    amalog.set_fact(subject.to_string(), object.to_string());
+                    println!("Facts: {{{}}}", {
+                        amalog
+                            .logics
+                            .iter()
+                            .map(|(k, v)| format!("{k} = {v}"))
+                            .collect::<Vec<String>>()
+                            .join(", ")
+                    })
+                } else {
+                    println!("Error: not a equal");
+                }
             }
             '?' => {
                 let program = &program[1..chars.len()];
                 let program = program.split("=").collect::<Vec<&str>>();
-                let (subject, object) = (program[0].trim(), program[1].trim());
-                println!("{}", amalog.query(subject.to_string(), object.to_string()));
+                if program.len() >= 2 {
+                    let (subject, object) = (program[0].trim(), program[1].trim());
+                    println!("{}", amalog.query(subject.to_string(), object.to_string()));
+                } else {
+                    println!("Error: not a equal");
+                }
             }
             _ => {}
         }

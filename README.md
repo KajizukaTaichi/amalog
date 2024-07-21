@@ -12,9 +12,9 @@ cargo run
 AmaLog - simple amateur's logical model
 (c) 2024 梶塚太智. All rights reserved
 > !socrates = human
-{"socrates": "human"}
+Facts: {socrates = human}
 > !human = will die
-{"human": "will die", "socrates": "human"}
+Facts: {socrates = human, human = will die}
 > ?socrates = will die
 true
 ```

@@ -37,7 +37,7 @@ impl AmaLog {
         if let Some(i) = predicate {
             if i == init {
                 println!("Error: lapsed into circular reasoning");
-                return None;
+                return Some(subject);
             }
             if let Some(j) = self.query_what(i.clone(), init) {
                 Some(j)

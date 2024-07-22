@@ -32,10 +32,14 @@ impl AmaLog {
         }
     }
 
-    fn query_what(&mut self, subject: String) -> Option<String> {
+    fn query_what(&mut self, subject: String, init: String) -> Option<String> {
         let predicate = self.logics.get(&subject).cloned();
         if let Some(i) = predicate {
-            if let Some(j) = self.query_what(i.clone()) {
+            if i == init {
+                println!("Error: lapsed into circular reasoning");
+                return None;
+            }
+            if let Some(j) = self.query_what(i.clone(), init) {
                 Some(j)
             } else {
                 Some(i.clone())
@@ -94,7 +98,7 @@ fn main() {
                 }
             }
             _ => {
-                if let Some(i) = amalog.query_what(program) {
+                if let Some(i) = amalog.query_what(program.clone(), program) {
                     println!("{}", i.clone())
                 }
             }
